@@ -1,27 +1,5 @@
 ## Week 4 Homework: Linux Systems Administration
 
-### Scenario 
-In the previous class activities, you acted as system administrator in order to troubleshoot a malfunctioning server.
-
-The senior administrator was quite pleased with your work. Now, they would like you to prepare another server to replace this server. You are tasked with completing the steps below to prepare a new server.
-
-### Lab Environment
-Log into your local virtual machine. Use the following credentials:
-
-- Username: `sysadmin`
-- Password: `cybersecurity`
-
-In order to get started with your tasks, you will need to open the Terminal within your Ubuntu VM. If you are unsure how to do it, within your Ubuntu VM, do the following:
-
-- Open the Linux terminal by pressing Ctrl+Alt+T for Windows users or Ctrl+Options+T for Mac users.
-
-- Alternatively, press Windows+A or Command+A for Mac users, then type "Terminal" in the search bar and select the Terminal icon (not the Xfce Terminal icon).
-
-### Instructions
-
-As you solve each step below, please fill out the [Submission File](SubmissionFile.md). This will be your homework deliverable.
-
-For each of the following steps, you will need to run the correct command and confirm the results.
 
 #### Step 1: Ensure Permissions on Sensitive Files
 
