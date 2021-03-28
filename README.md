@@ -109,7 +109,6 @@ Step 1. Configure the filebeat-configuration.yml file
     - Scroll to line #1106 and replace the IP address with the IP address of the ELK machine.
     - Scroll to line #1806 and replace IP address with the IP address of ELK machine.
     - Save the file in /etc/ansible/files/filebeat-config.yml.
-- Run the configuration file with the command: ansible-playbook filebeat-configuration.yml.
 
 Step 2. Create filebeat-playbook.yml
 - Create a filebeat-playbook.yml in the /etc/ansible/roles/ directory.
