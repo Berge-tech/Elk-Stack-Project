@@ -98,6 +98,7 @@ These Beats allow us to collect the following information from each machine:
 - Metricbeat collects server metrics like CPU, memory usage and network statistics. They are used to monitor the system. The data is sent to Elasticsearch which can be viewed on Kibana.
 
 Using the Playbook
+
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned, plus an ELK server up and running. SSH into the control node and follow the steps below:
 
 Step 1. Configure the filebeat-configuration.yml file
