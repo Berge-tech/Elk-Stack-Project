@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Listed below two scripts created for completing Unit. 3 Homework. The scenario involved two people who stole money from Lucky Duck casino. We were given the dates and times of dealers and players at Lucky Duck casino with the instruction to find patterns for determing who the criminals were.
+
+#Script for finding the roulette dealer by time and game. 
+#!/bin/bash  
+cat $1_Dealer_schedule | aw| grep "Hour"
+cat $1_Dealer_schedule | awk -F" " '{print $1, $2,'$3','$4'}' | grep "$2"
+
+#Script for finding the dealer working during losses at the casino. 
+#! /bin/bash
+cat 0310_Dealer_schedule | awk -F" " '{print $1, $2, $5, $6}' | grep '05:00:00 AM\|08:00:00 AM\|02:00:00 PM\|08:00:00 PM\|11:00:00 PM' > Dealer_working_during_losses
+cat 0312_Dealer_schedule | awk -F" " '{print $1, $2, $5, $6}' | grep '05:00:00 AM\|08:00:00 AM\|02:00:00 PM\|08:00:00 PM\|11:00:00 PM' >>  Dealer_working_during_losses
+cat 0315_Dealer_schedule | awk -F" " '{print $1, $2, $5, $6}' | grep '05:00:00 AM\|08:00:00 AM\|02:00:00 PM' >> Dealer_working_during_losses
