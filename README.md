@@ -9,10 +9,10 @@ These files have been tested and used to generate a live ELK deployment on Azure
 The following Ansible-playbooks are needed to create and install DVWA, the ELK-server, Filebeat and Metricbeat.
 - My_playbook.yml- Used to install apache, python3, docker and DVWA servers onto Web VM's 1,2 and 3.
 - ELK_playbook.yml- Used to install the Elk server.
-- Filebeat_playbook.yml- Used to install Filebeat onto DVWA and ELK servers.  
-- Config_Filebteat.yml- Used to configure Filebeat onto DVWA and ELK servers.
-- Config_Metricbeat.yml- Used to configure Metricbeat onto DVWA and Elk servers.
-- Metricbeat.yml- Used to install Metricbeat onto DVWA and ELK servers. 
+- Filebeat_playbook.yml- Used to install Filebeat onto DVWA servers.  
+- Config_Filebteat.yml- Used to configure Filebeat onto DVWA servers.
+- Config_Metricbeat.yml- Used to configure Metricbeat onto DVWA servers.
+- Metricbeat.yml- Used to install Metricbeat onto DVWA servers. 
 
 This document contains the following details:
 - Description of the Topology
@@ -95,17 +95,18 @@ We have installed the following Beats on these machines:
 
 These Beats allow us to collect the following information from each machine:
 - Filebeat collects log files from servers like Apache, nginx, MySQL to forward to Logstash for processing or to index in Elasticsearch. These files can be viewed on Kibana. They provide information on the server like requests from other computers that result in response and actions.
-- Metricbeat collects server metrics like CPU, memory usage and network statistics, which are used to monitor system health. The data is sent to Elasticsearch which can be viewed on Kibana.
+- Metricbeat collects server metrics like CPU, memory usage and network statistics. They are used to monitor the system. The data is sent to Elasticsearch which can be viewed on Kibana.
 
 Using the Playbook
-In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned, plus an ELK server container up and running. SSH into the control node and follow the steps below:
+In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned, plus an ELK server up and running. SSH into the control node and follow the steps below:
 
 Step 1. Configure the filebeat-configuration.yml file
 - Navigate to http://13.82.85.204:5601:5601/app/kibana.
 - Click on Add Log data.
 - Choose System Logs.
 - Click on the DEB tab under Getting Started to view correct Linus Filebeat installation instructions.
-- Copy the filebeat-configuration.yml file to /etc/ansible/roles/ directory.
+- Use the curl command to down load the finle into ansible. 
+- Command: curl https://gist.githubusercontent.com/slape/5cc350109583af6cbe577bbcc0710c93/raw/eca603b72586fbe148c11f9c87bf96a63cb25760/Filebeat > /etc/ansible/filebeat-config.yml
 - Update the filebeat-configuration.yml file to include the following:
     - Scroll to line #1106 and replace the IP address with the IP address of the ELK machine.
     - Scroll to line #1806 and replace IP address with the IP address of ELK machine.
@@ -114,8 +115,8 @@ Step 1. Configure the filebeat-configuration.yml file
 Step 2. Create filebeat-playbook.yml
 - Create a filebeat-playbook.yml in the /etc/ansible/roles/ directory.
 - Vi or Nano can be used as text editors for writing the playbook.
-- Include the .deb file using the command: dpkg -i filebeat-7.4.0-amd64.deb
-- Copy the filebeat to /etc/filebeat/filebeat.yml
+- Include the .deb file using the command: dpkg -i filebeat-7.4.0-amd64.deb.
+- Inclue the filebeat configuration file.
 - Include the following commands:
    - filebeat modules enable system
    - filebeat setup
@@ -132,7 +133,7 @@ Step 3. Verify Filebeat configuration was successful.
 
 ![image](https://user-images.githubusercontent.com/73409624/112742540-160ee880-8f55-11eb-8e0a-1b0c5c5da72d.png)
 
-Metricbeat was installed following the instructions provided on Kibana's website for Docker metrics. The configuration file was edited to include the ELK server. In addition, an ansible playlist was created to install and launch metricbeat. The success of the playbook was verified by checking the module status under docker metrics in Kibana.
+Metricbeat was installed following the instructions provided on Kibana's website for Docker metrics. The configuration file was edited to include the ELK server. In addition, an ansible playlist was created to install and launch metricbeat on the Web VMs. The success of the playbook was verified by checking the module status under docker metrics in Kibana.
 
 ![image](https://user-images.githubusercontent.com/73409624/112742525-e65fe080-8f54-11eb-9c87-4fc1a8b0b780.png)
 
