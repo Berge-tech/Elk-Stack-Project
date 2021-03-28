@@ -11,7 +11,8 @@ The following Ansible-playbooks are needed to create and install DVWA, the ELK-s
 - ELK_playbook.yml- Used to install the Elk server.
 - Filebeat_playbook.yml- Used to install Filebeat onto DVWA and ELK servers.  
 - Config_Filebteat.yml- Used to configure Filebeat onto DVWA and ELK servers.
-- Metricbeat.yml- Used to configure Metricbeat onto DVWA and Elk servers.
+- Config_Metricbeat.yml- Used to configure Metricbeat onto DVWA and Elk servers.
+- Metricbeat.yml- Used to install Metricbeat onto DVWA and ELK servers. 
 
 This document contains the following details:
 - Description of the Topology
