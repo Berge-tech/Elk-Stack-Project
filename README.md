@@ -31,7 +31,7 @@ What aspect of security do load balancers protect? Load balancing ensures redund
 What is the advantage of a jump box? One advantage of a Jump Box is to have a single node for sending network or application traffic across multiple servers. It provides a Secure Admin Workstation (SAW) for accessing servers in different security zones.  
 
 Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the logs and system traffic.
-- Filebeat monitors log files, collect events and forwards them to Elasticsearch or Logstash for indexing.
+- Filebeat monitors log files and collects events. It sends the data to either Elasticsearch or Logstash for indexing.
 - Metricbeat collects metrics and statistics from services running on a server then outputs them to Elasticsearch or Logstash.
 
 The configuration details of each machine may be found below.
@@ -71,52 +71,12 @@ Ansible was used to automate configuration of the ELK machine. No configuration 
 
 The playbook implements the following tasks:
 
-Install docker.io
-  - name: docker.io
-    apt:
-      force_apt_get: yes
-      update_cache: yes
-      name: docker.io
-      state: present
-
-Install pip3
-- name: Install pip3
-   apt:
-      force_apt_get: yes
-      name: python3-pip
-      state: present
-
-Install Docker python module
-- name: Install Docker python module
-  pip:
-    name: docker
-    state: present
-
-Download and launch a docker web container (image sebp/elk) to published ports (5044, 5601 and 9200)
-- name: download and launch a docker web container
-   docker_container:
-     name: elk
-     image: sebp/elk:761
-     state: started
-     restart_policy: always
-     published_ports:
-       - "5601:5601"
-       - "9200:9200"
-       - "5044:5044"
-
-Enable docker service
-- name: Enable docker service
-    systemd:
-      name: docker
-      enabled: yes
-
-Increase virtual memory  
-- name: Use more memory
-    sysctl:
-      name: vm.max_map_count
-      value: '262144'
-      state: present
-      reload: yes
+- Install docker.io
+- Install pip3
+- Install Docker python module
+- Download and launch a docker web container (image sebp/elk) to published ports (5044, 5601 and 9200)
+- Enable docker service
+- Increase virtual memory  
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
@@ -149,10 +109,7 @@ Step 1. Configure the filebeat-configuration.yml file
     - Scroll to line #1106 and replace the IP address with the IP address of the ELK machine.
     - Scroll to line #1806 and replace IP address with the IP address of ELK machine.
     - Save the file in /etc/ansible/files/filebeat-config.yml.
-
-~/OneDRive/Documents/Elk-Stack-Project/Ansible/Config_Filebteat.yml
-
-- Run the playbook with the command: ansible-playbook filebeat-configuration.yml.
+- Run the configuration file with the command: ansible-playbook filebeat-configuration.yml.
 
 Step 2. Create filebeat-playbook.yml
 - Create a filebeat-playbook.yml in the /etc/ansible/roles/ directory.
@@ -173,7 +130,7 @@ Step 3. Verify Filebeat configuration was successful.
 - Click on Check Data.
 - Scroll to the bottom of the page and click Verify Incoming Data.
 
-~/oneDRive/Documents/Elk-Stack-Project/images/'Filebeat success.JPG'
+![image](https://user-images.githubusercontent.com/73409624/112742540-160ee880-8f55-11eb-8e0a-1b0c5c5da72d.png)
 
 Metricbeat was installed following the instructions provided on Kibana's website for Docker metrics. The configuration file was edited to include the ELK server. In addition, an ansible playlist was created to install and launch metricbeat. The success of the playbook was verified by checking the module status under docker metrics in Kibana.
 
@@ -182,5 +139,5 @@ Metricbeat was installed following the instructions provided on Kibana's website
 Answer the following questions to fill in the blanks:
 - Which file is the playbook? The playbook is filebeat-playbook.yml.
 - Where do you copy it? It is copied to /etc/ansible/roles directory.
-- Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on? The hosts file is updated with the private IP address of the web and ELK servers, this specifies which machine to install. The ansbile files are updated by selecting the group to run the playbook on. This determines which machines will have the ELK server or Filebeat.
+- Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on? The hosts file is updated with the private IP addresses of the web and ELK servers; this specifies which machine to install. The ansbile files are updated by selecting the group to run the playbook on. This determines which machines will have the ELK server or Filebeat.
 - Which URL do you navigate to in order to check that the ELK server is running? http://13.82.85.204:5601/app/kibana.
