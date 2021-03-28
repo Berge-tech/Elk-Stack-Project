@@ -70,23 +70,23 @@ To get started, navigate to the `~/Projects` directory where your downloaded `Ta
 
 1. Extract the `TarDocs.tar` archive file into the current directory (`~/Projects`). Afterwards, list the directory's contents with `ls` to verify that you have extracted the archive properly.
 
-      - Note that because we want to preserve the directory structure of our archive, we do not have to specify a target directory to extract to.
-
-      - Note that when you run `ls` you should see a new `~/Projects/TarDocs` directory with five new subdirectories under `TarDocs/`.
-
+tar -xvf TarDocs.tar
+~/Projects/TarDocs ls
 
 Verify that there is a `Java` subdirectory in the `TarDocs/Documents` folder by running: `ls -l ~/Projects/TarDocs/Documents/`.
 
 2. Create a `tar` archive called `Javaless_Docs.tar` that excludes the `Java` directory from the newly extracted `TarDocs/Document/` directory.
 
-      - If you've executed this command properly, you should have a `Javaless_Docs.tar` archive in the `~/Projects` folder.
+Tar cvf JavaLess_Docs.tar --exclude TarDocs/Documents/Java TarDocs 
 
 3. Verify that this new `Javaless_Docs.tar` archive does not contain the `Java` subdirectory by using `tar` to list the contents of `Javaless_Docs.tar` and then piping `grep` to search for `Java`.
+
+Tar tvf JavaLess_Docs.tar | grep Java 
 
 **Bonus** 
 - Create an incremental archive called `logs_backup.tar.gz` that contains only changed files by examining the `snapshot.file` for the `/var/log` directory. You will need `sudo` for this command.
 
----
+Sudo tar cvzf logs_backup.tar.gz --listed-incremental+snapshot-file /var/log
 
 #### Step 2: Create, Manage, and Automate Cron Jobs
 
@@ -106,8 +106,9 @@ For this task, you'll need to create an archiving cron job using the following s
       - An archive (`tar`) command with three options.
       - The path to save the archive to
       - The path of the file to archive.
+  
+  0 6 * * 3 tar -czf ~/TarDocs/auth_backup.tgz  /var/log/auth.log
 
----
 
 #### Step 3: Write Basic Bash Scripts
 
@@ -122,9 +123,11 @@ For example, the directory `freemem` will be used to store **free memory** syste
       - `~/backups/diskuse`
       - `~/backups/openlist`
       - `~/backups/freedisk`
+      
+mkdir -p ./backups/{freemem,diskuse,openlist,freedisk}
+~/backups ls
 
-      **Note**: Remember that brace expansion uses the following format: `~/exampledirectory/{subdirectory1,subdirectory2,etc}`
-
+  
 Now you will create a script that will execute various Linux tools to parse information about the system. Each of these tools should output results to a text file inside its respective system information directory.
 
 -  For example: `cpu_usage_tool > ~/backups/cpuuse/cpu_usage.txt`
@@ -139,19 +142,28 @@ To get started with setting up your script up in your `home` directory, do the f
 
 **Note**: If you're unsure how to get started, we included a `system.sh` starter file. Use that as a guide.
 
+
 2. Edit the `system.sh` script file so that it that does the following:
 
       - Prints the amount of free memory on the system and saves it to `~/backups/freemem/free_mem.txt`.
-
+      
       - Prints disk usage and saves it to `~/backups/diskuse/disk_usage.txt`.
 
       - Lists all open files and saves it to `~/backups/openlist/open_list.txt`.
 
       - Prints file system disk space statistics and saves it to `~/backups/freedisk/free_disk.txt`.
 
-      **Note**: For the free memory, disk usage, and free disk commands, make sure you use the `-h` option to make the output human-readable.
+      free -h > ~/backups/freemem/free_mem.txt
+      
+      df -h > ~/backups/diskuse/disk_usage.txt
+      
+      lsof > ~/backups/openlist/open_list.txt
+      
+      df -h > /backups/freedisk/free_disk.txt
 
 3. Save this file and make sure to change or modify the `system.sh` file permissions so that it is executable.
+
+chmod +x system.sh (add sudo to the command if permissions are needed)
 
 You should now have an executable `system.sh` file within your home `~/` directory.
 
@@ -162,10 +174,14 @@ You should now have an executable `system.sh` file within your home `~/` directo
 **Optional** 
 - Confirm the script ran properly by navigating to any of subdirectories in the `~/backup/` directory and using `cat <filename>` to view the contents of the backup files.
 
+sudo ./system.sh
+
+ls in each subdirectory followed by cat <file>.txt
+
 **Bonus**
 - Automate your script `system.sh` by adding it to the `weekly` system-wide cron directory.
 
----
+sudo cp system.sh /etc/cron.d
 
 #### Step 4: Perform Various Log Filtering Techniques
 
@@ -175,19 +191,28 @@ There was a suspicious login from a host on the network during the early morning
 
 1. Use `journalctl` to perform a log search that returns all messages, with priorities from emergency to error, since the current system boot.
 
+Journalctl -b -1 -p “emerg” .. “err
+
 2. Use `journalctl` to check the disk usage of the system journal unit since the most recent boot. You will likely have to pipe this output to `less` if it doesn't fit on the screen.
 
    - The unit you want is `systemd-journald`.
+   
+Journalctl -b -u systemd-journald | less
 
 3. Use `journalctl` to remove all archived journal files except the most recent two.
+
+Sudo journalctl --vacuum-files=2
 
 **Bonus**
 - Use `journalctl` to filter all log messages with priority levels between zero and two, and save the results to a file named `Priority_High.txt` in `/home/student/` directory.
 
+Journalctl -p 0..2 >Priority_High.txt
+
 - Automate the last task by creating a cron job that runs daily in the root crontab.
 
-  **Note**: You'll need `sudo` to run `journalctl`.
+0 0 * * * journalctl -p 0..2 > Priority_High.txt /home/sysadmin
 
+ 
 ---
 
 #### Step 5. Create Priority-Based Log Files
@@ -198,10 +223,12 @@ To get started with editing `rsyslog` configurations from any directory within y
 
 1. Configure `rsyslog` to record mail log message for all priorities except debug to the `/var/log/mail.log` directory.
 
+Mail.!debug   /var/mail.log
+
 **Bonus**
 - Configure `rsyslog` to record boot log messages for all priorities except info and debug to the `/var/log/boot.log` directory.
 
----
+boot.!info,!debug  /var/log/boot.log
 
 #### Step 6. Manage Log File Sizes
 
@@ -209,10 +236,7 @@ You realize that the spam messages are making the size of the log files unmanage
 
 You’ve decided to implement log rotation in order to preserve log entries and keep log file sizes more manageable. You’ve also chosen to compress logs during rotation to preserve disk space and lower costs.
 
-1. Run `sudo nano /etc/logrotate.conf` to edit the `logrotate` config file. You don't need to work out of any specific directory as you are using the full configuration file path.
-
-
-2. Configure a log rotation scheme that backs up authentication messages to the `/var/log/auth.log` directory using the following settings:
+1. Run `sudo nano /etc/logrotate.conf` to edit the `logrotate` config file. You don't need to work out of any specific directory as you are using the full configuration file path. Configure a log rotation scheme that backs up authentication messages to the `/var/log/auth.log` directory using the following settings:
 
       - Rotates weekly.
 
@@ -225,6 +249,14 @@ You’ve decided to implement log rotation in order to preserve log entries and 
       - Skips error messages for missing logs and continues to next log.
 
       Don't forget to surround your rotation rules with curly braces `{}`.
+      
+/var/log.auth.log {
+weekly
+rotate 7
+notifempty
+delaycompression
+missingok
+}
 
 ---
 
@@ -234,12 +266,15 @@ In an effort to help mitigate against future attacks, you have decided to create
 
 1. Verify the `auditd` service is active using the `systemctl` command.
 
+service auditd status
 
 2. Run `sudo nano /etc/audit/auditd.conf` to edit the `auditd` config file using the following parameters. You can run this command from anywhere using the terminal.
 
       - Number of retained logs is seven.
 
       - Maximum log file size is 35.
+      
+ sudo nano /etc/audit/auditd.conf
 
 3. Next, run `sudo nano /etc/audit/rules.d/audit.rules` to edit the rules for `auditd`. Create rules that watch the following paths:
 
@@ -248,28 +283,34 @@ In an effort to help mitigate against future attacks, you have decided to create
       - For `/etc/passwd`, set `wra` for the permissions to monitor and set the `keyname` for this rule to `userpass_audit`.
 
       - For `/var/log/auth.log`, set `wra` for the permissions to monitor and set the `keyname` for this rule to `authlog_audit`.
-
+      
+ sudo nano /etc/audit/rules.d/audit.rules
+ 
+ sudo auditctl -l 
+ 
 4. Restart the `auditd` daemon.
+
+ sudo systemctl restart auditd
 
 5. Perform a listing that reveals all existing `auditd` rules.
 
-      - **Note**: If you're unsure how to construct these rules, refer to the `auditd` section within the [5.3 Student Guide](../../1-Lesson-Plans/05-Archiving-and-Logging-Data/3/studentguide.md). 
-
+auditctl    
+ 
 6. Using `sudo`, produce an audit report that returns results for all user authentications.
 
-      - **Note:** You will need to log out and back in to populate the report.
+sudo aureport -au
 
 7. Now you will shift into hacker mode. Create a user with `sudo useradd attacker` and produce an audit report that lists account modifications. 
 
+sudo aureport -m 
+
 8. Use `auditctl` to add another rule that watches the `/var/log/cron` directory.
+
+sudo auditctl -w /var/log/cron
 
 9. Perform a listing that reveals changes to the `auditd` rules took affect.
 
----
-
-### Submission Guidelines 
-
-- Please fill out and submit [SubmissionFile.md](Submission.md).
+sudo auditctl -l 
 
 ---
 © 2020 Trilogy Education Services, a 2U, Inc. brand. All Rights Reserved.
