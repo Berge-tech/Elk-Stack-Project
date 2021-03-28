@@ -163,9 +163,6 @@ Step 2. Create filebeat-playbook.yml
    - filebeat modules enable system
    - filebeat setup
    - service filebeat start
-
-~/OneDRive/Documents/Elk-Stack-Project/Ansible/Filebeat_playbook.yml
-
 - Run the playbook with the command: ansible-playbook filebeat_playbook.yml
 
 Step 3. Verify Filebeat configuration was successful.
@@ -180,16 +177,10 @@ Step 3. Verify Filebeat configuration was successful.
 
 Metricbeat was installed following the instructions provided on Kibana's website for Docker metrics. The configuration file was edited to include the ELK server. In addition, an ansible playlist was created to install and launch metricbeat. The success of the playbook was verified by checking the module status under docker metrics in Kibana.
 
-~/OneDRive/Documents/Elk-Stack-Project/Ansible/Config_Metricbeat.yml
-~/OneDRive/Documents/Elk-Stack-Project/Ansible/Metricbeat.yml
-~/OneDRive/Documents/Elk-Stack-Project/images/'Metricbeat success.JPG'
-
+![image](https://user-images.githubusercontent.com/73409624/112742525-e65fe080-8f54-11eb-9c87-4fc1a8b0b780.png)
 
 Answer the following questions to fill in the blanks:
 - Which file is the playbook? The playbook is filebeat-playbook.yml.
 - Where do you copy it? It is copied to /etc/ansible/roles directory.
 - Which file do you update to make Ansible run the playbook on a specific machine? How do I specify which machine to install the ELK server on versus which to install Filebeat on? The hosts file is updated with the private IP address of the web and ELK servers, this specifies which machine to install. The ansbile files are updated by selecting the group to run the playbook on. This determines which machines will have the ELK server or Filebeat.
-
-~/OneDRive/Documents/Elk-Stack-Project/Ansible/hosts
-
 - Which URL do you navigate to in order to check that the ELK server is running? http://13.82.85.204:5601/app/kibana.
