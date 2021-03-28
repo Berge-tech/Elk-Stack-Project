@@ -120,7 +120,7 @@ Increase virtual memory
 
 The following screenshot displays the result of running `docker ps` after successfully configuring the ELK instance.
 
-~/OneDRive/Documents/Elk-Stack-Project/Images/'docker ps.JPG'
+![image](https://user-images.githubusercontent.com/73409624/112742458-5c177c80-8f54-11eb-8b1d-52fafaf9d629.png)
 
 Target Machines & Beats
 This ELK server is configured to monitor the following machines:
