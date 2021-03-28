@@ -2,7 +2,6 @@
 
 This unit's homework is designed to solidify the following concepts and tools:
 
-
 - Create a `tar` archive that excludes a directory using the `--exclude=` command option.
 - Manage backups using cron jobs.
 - Write bash scripts to create system resource usage reports.
@@ -58,7 +57,6 @@ For this task, you'll need to create an archiving cron job using the following s
   
   0 6 * * 3 tar -czf ~/TarDocs/auth_backup.tgz  /var/log/auth.log
 
-
 #### Step 3: Write Basic Bash Scripts
 
 Portions of the Gramm-Leach-Bliley Act require organizations to maintain a regular backup regimen for the safe and secure storage of financial data.
@@ -90,7 +88,6 @@ To get started with setting up your script up in your `home` directory, do the f
 - Run the command `nano system.sh` to open a new Nano window.
 
 **Note**: If you're unsure how to get started, we included a `system.sh` starter file. Use that as a guide.
-
 
 2. Edit the `system.sh` script file so that it that does the following:
 
@@ -161,9 +158,6 @@ Journalctl -p 0..2 >Priority_High.txt
 
 0 0 * * * journalctl -p 0..2 > Priority_High.txt /home/sysadmin
 
- 
----
-
 #### Step 5. Create Priority-Based Log Files
 
 Your organization is constantly bombarded with spam messages, a type of social engineering attack. To address this, you’ve decided to implement a priority-based log filtering system to monitor access to the mail daemon.   
@@ -206,8 +200,6 @@ notifempty
 delaycompression
 missingok
 }
-
----
 
 #### Bonus: Check for Policy and File Violations
 
